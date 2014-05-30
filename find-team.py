@@ -5,12 +5,8 @@ import csv
 import sys
 
 
-
 def main(args):
-    
     print args
-    
 
-
-if __name__=='__main__':
+if __name__ == '__main__':
     main(sys.argv)
