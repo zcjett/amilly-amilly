@@ -3,6 +3,7 @@
 import argparse
 import csv
 import sys
+from collections import Counter
 from random import randint, choice
 
 def clean_name(name):
@@ -48,6 +49,13 @@ def main(argv):
     salaries = parse_salaries(args.salaries)
 
     projections = [(name, fake_score(pos)) for name, pos, salary, status in salaries]
+
+    pos_counts = Counter()
+    for name, pos, salary, status in salaries:
+        pos_counts[pos] += 1
+
+    for k, v in sorted(pos_counts.items(), key=lambda x: x[1]):
+        print k, v
 
 
 if __name__ == '__main__':
