@@ -1,10 +1,4 @@
-#!/usr/bin/env python
-
-import argparse
 import csv
-import sys
-import json
-from collections import Counter
 from random import randint, choice
 
 
@@ -86,26 +80,3 @@ class PlayerSalaryScores:
             return randint(5, 20) + choice([0.0, 0.33, 0.66])
         else:
             return randint(-1, 10) + choice([0.0, 0.25, 0.5, 0.75])
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Find dat team.')
-    parser.add_argument('salaries', help='File containing player salaries and positions.')
-    parser.add_argument('projections', help='File containing projected points.')
-    args = parser.parse_args()
-
-    players = PlayerSalaryScores()
-
-    players.read_positions_and_salaries(args.salaries)
-    players.add_fake_scores()
-
-    positions = set()
-    for name in players.get_names():
-        positions.add(players.get_position(name))
-
-    for pos in positions:
-        print pos, len(players.get_names(position=pos))
-
-
-if __name__ == '__main__':
-    main()
