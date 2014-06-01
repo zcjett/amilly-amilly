@@ -2,6 +2,16 @@
 
 import argparse
 from player_salary_scores import PlayerSalaryScores
+from knapsack import ModifiedKnapsack
+
+CAPACITY = 30000
+RESTRICTIONS = {'P': 1,
+                'C': 1,
+                '1B': 1,
+                '2B': 1,
+                'SS': 1,
+                '3B': 1,
+                'OF': 3}
 
 def main():
     parser = argparse.ArgumentParser(description='Find dat team.')
@@ -10,17 +20,16 @@ def main():
     args = parser.parse_args()
 
     players = PlayerSalaryScores()
-
     players.read_positions_and_salaries(args.salaries)
     players.add_fake_scores()
 
-    positions = set()
-    for name in players.get_names():
-        positions.add(players.get_position(name))
+    names = players.get_names()
+    classes = [players.get_position(n) for n in names]
+    values = [players.get_score(n) for n in names]
+    weights = [players.get_salary(n) for n in names]
+    knapsack = ModifiedKnapsack(names, classes, values, weights, CAPACITY, RESTRICTIONS)
 
-    for pos in positions:
-        print pos, len(players.get_names(position=pos))
-
+    knapsack.find_solution()
 
 if __name__ == '__main__':
     main()

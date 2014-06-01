@@ -59,6 +59,7 @@ class PlayerSalaryScores:
             self.set_position(name, position)
 
     def add_fake_scores(self):
+        print 'WARNING: using fake scores.'
         for name in self.get_names():
             self.set_score(name, self._fake_score(self.get_position(name)))
 
