@@ -4,7 +4,7 @@ import argparse
 from player_salary_scores import PlayerSalaryScores
 from knapsack import ModifiedKnapsack
 
-CAPACITY = 30000
+CAPACITY = 35000
 RESTRICTIONS = {'P': 1,
                 'C': 1,
                 '1B': 1,
