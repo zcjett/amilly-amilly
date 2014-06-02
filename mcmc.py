@@ -29,7 +29,6 @@ class TeamMCMC:
         return self.available_names_by_class[object_class]
 
     def make_random_team(self):
-        print 'Creating random team.'
         team_found = False
         while not team_found:
             random_comp = list(self.valid_comp)
@@ -50,6 +49,12 @@ class TeamMCMC:
             team_found = True
 
     def find_solution(self):
-        self.make_random_team()
-        print '$%d' % self.current_cost, self.current_value, self.current_team
+        teams = []
+        for i in range(10000):
+            self.make_random_team()
+            teams.append( (self.current_cost, self.current_value, self.current_team) )
 
+        teams.sort(key=lambda x: x[1])
+
+        for cost, val, team in teams:
+            print '$%d' % cost, val, team
