@@ -31,11 +31,12 @@ def main():
     values = [players.get_score(n) for n in names]
     weights = [players.get_salary(n) for n in names]
 
-    knapsack = ModifiedKnapsack(names, classes, values, weights, CAPACITY, TEAM_COMP)
+#    knapsack = ModifiedKnapsack(names, classes, values, weights, CAPACITY, TEAM_COMP)
 #    knapsack.find_solution()
 
     mcmc = TeamMCMC(names, classes, values, weights, CAPACITY, TEAM_COMP)
-    team = mcmc.find_solution()
+    #team = mcmc.find_random_solutions()
+    mcmc.find_simulated_annealing_solution()
 
 if __name__ == '__main__':
     main()
