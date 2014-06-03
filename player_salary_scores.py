@@ -47,7 +47,6 @@ class PlayerSalaryScores:
         self.players.pop(name, None)
 
     def read_positions_and_salaries(self, infile):
-        self.players = {}
         reader = csv.reader(open(infile), quotechar='"')
         for line in reader:
             # Sample entry:
@@ -57,6 +56,13 @@ class PlayerSalaryScores:
             salary = self._clean_salary(line[5])
             self.set_salary(name, salary)
             self.set_position(name, position)
+
+    def read_projections(self, infile):
+        reader = csv.reader(open(infile), quotechar='"')
+        for line in reader:
+            name = line[0].strip()
+            score = float(line[1])
+            self.set_score(name, score)
 
     def add_fake_scores(self):
         print 'WARNING: using fake scores.'
