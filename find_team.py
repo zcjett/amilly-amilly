@@ -5,6 +5,7 @@ import sys
 from player_salary_scores import PlayerSalaryScores
 from knapsack import ModifiedKnapsack
 from mcmc import TeamMCMC
+from player_stats import PlayerStats
 
 CAPACITY = 35000
 TEAM_COMP = {'P': 1,
@@ -19,6 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description='Find dat team.')
     parser.add_argument('salaries', help='File containing player salaries and positions.')
     parser.add_argument('projections', help='File containing projected points.')
+    parser.add_argument('stats', help='Directory containing player stats.')
     parser.add_argument('--knapsack', help='Find a team using the modified knapsack approach.')
     parser.add_argument('--mcmc', action='store_true', help='Find a team using the MCMC approach.')
     args = parser.parse_args()
@@ -39,6 +41,10 @@ def main():
     if args.mcmc:
         mcmc = TeamMCMC(names, classes, values, weights, CAPACITY, TEAM_COMP)
         mcmc.find_simulated_annealing_solution()
+
+    stats = PlayerStats(args.stats)
+
+
 
 if __name__ == '__main__':
     main()
