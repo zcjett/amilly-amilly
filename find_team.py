@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 
 import argparse
-import sys
-from player_salary_scores import PlayerSalaryScores
-from knapsack import ModifiedKnapsack
-from mcmc import TeamMCMC
-from player_stats import PlayerStats
-from ballpark_stats import BallparkStats
-from team_stats import TeamStats
-from league_stats import LeagueStats
+
+from stat_parsers.player_stats import PlayerStats
+from stat_parsers.ballpark_stats import BallparkStats
+from stat_parsers.team_stats import TeamStats
+from stat_parsers.league_stats import LeagueStats
+
+
 
 CAPACITY = 35000
 TEAM_COMP = {'P': 1,
