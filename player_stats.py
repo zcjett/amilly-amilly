@@ -10,13 +10,14 @@ class PlayerStats:
         self.stats = defaultdict(lambda: defaultdict( lambda: defaultdict( lambda: defaultdict (dict))))
 
 
-        #self.readPitcherHomeAway()
-        #self.readPitcherLeftRight()
-        self.readPitcherTotalStats()
+        # self.read_pitcher_home_away()
+        # self.read_pitcher_left_right()
+        # self.read_pitcher_total_stats()
+        self.read_catcher_stats()
 
         self.printStats()
 
-    def readPitcherHomeAway(self):
+    def read_pitcher_home_away(self):
         stat = 'xfip'
         years = [2013, 2014]
         for year in years:
@@ -30,7 +31,7 @@ class PlayerStats:
                     self.stats[player][stat][year][loc] = xfip
 
 
-    def readPitcherLeftRight(self):
+    def read_pitcher_left_right(self):
         stats = ['hr_allowed', 'bb_allowed', 'tbf', 'woba_allowed']
         years = [2013, 2014]
         for year in years:
@@ -44,7 +45,7 @@ class PlayerStats:
                         self.stats[player][stats[i]][year][hand] = stat_val
 
 
-    def readPitcherTotalStats(self):
+    def read_pitcher_total_stats(self):
         stats = ['gs', 'k', 'ip']
         years = [2013, 2014]
         for year in years:
@@ -56,6 +57,18 @@ class PlayerStats:
                 for i, stat_val in enumerate([float(x) for x in items[2:5]]):
                     self.stats[player][stats[i]][year] = stat_val
 
+
+    def read_catcher_stats(self):
+        stats = ['sb_allowed', 'cs']
+        years = [2013, 2014]
+        for year in years:
+            infile = '%s/Catcher/%d Catcher Stats.csv' %(self.statsDir, year)
+            reader = csv.reader(open(infile), quotechar='"')
+            header = reader.next()
+            for items in reader:
+                player = items[0].lower()
+                for i, stat_val in enumerate([float(x) for x in items[2:4]]):
+                    self.stats[player][stats[i]][year] = stat_val
 
 
     def printStats(self):
