@@ -10,7 +10,7 @@ class LeagueStats:
         self.stats = defaultdict(dict)
 
         self.read_league_stats()
-        self.print_stats()
+        #self.print_stats()
 
 
     def read_league_stats(self):

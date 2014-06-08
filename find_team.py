@@ -44,13 +44,10 @@ def main():
     # if args.mcmc:
     #     mcmc = TeamMCMC(names, classes, values, weights, CAPACITY, TEAM_COMP)
     #     mcmc.find_simulated_annealing_solution()
-    #
-    # player_stats = PlayerStats(args.stats)
-    #
-    # ballpark_stats = BallparkStats(args.stats)
-    #
-    # team_stats = TeamStats(args.stats)
 
+    player_stats = PlayerStats(args.stats)
+    ballpark_stats = BallparkStats(args.stats)
+    team_stats = TeamStats(args.stats)
     league_stats = LeagueStats(args.stats)
 
 

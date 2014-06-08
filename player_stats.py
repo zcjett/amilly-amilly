@@ -16,7 +16,7 @@ class PlayerStats:
         self.read_batter_left_right()
         self.read_batter_total_stats()
 
-        self.printStats()
+        #self.printStats()
 
     def read_pitcher_home_away(self):
         stat = 'xfip'

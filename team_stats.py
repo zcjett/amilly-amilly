@@ -42,7 +42,7 @@ class TeamStats:
 
 
         self.read_team_stats()
-        self.printStats()
+        #self.printStats()
 
 
     def read_team_stats(self):

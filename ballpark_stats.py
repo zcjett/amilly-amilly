@@ -10,7 +10,7 @@ class BallparkStats:
         self.stats = defaultdict(dict)
 
         self.read_ballpark_stats()
-        self.printStats()
+        #self.printStats()
 
 
     def read_ballpark_stats(self):
