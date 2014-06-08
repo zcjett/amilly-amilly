@@ -91,7 +91,7 @@ class PlayerStats:
                  '3b_total',
                  'h_total',
                  'bb_total',
-                 'bb_percentage_total',
+                 'bb_percent_total',
                  'hr_total',
                  'ab_total',
                  'pa_total',
@@ -107,7 +107,7 @@ class PlayerStats:
             for items in reader:
                 player = items[0].lower()
                 for i, stat_val in enumerate([float(x.rstrip('%')) for x in items[2:15]]):
-                    if stats[i]=='bb_percentage_total':
+                    if stats[i]=='bb_percent_total':
                         stat_val/=100.0
                     self.stats[player][year][stats[i]] = stat_val
 
