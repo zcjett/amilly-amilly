@@ -7,6 +7,7 @@ from knapsack import ModifiedKnapsack
 from mcmc import TeamMCMC
 from player_stats import PlayerStats
 from ballpark_stats import BallparkStats
+from team_stats import TeamStats
 
 CAPACITY = 35000
 TEAM_COMP = {'P': 1,
@@ -44,8 +45,10 @@ def main():
     #     mcmc.find_simulated_annealing_solution()
     #
     # player_stats = PlayerStats(args.stats)
+    #
+    # ballpark_stats = BallparkStats(args.stats)
 
-    ballpark_stats = BallparkStats(args.stats)
+    team_stats = TeamStats(args.stats)
 
 
 

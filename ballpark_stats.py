@@ -16,10 +16,8 @@ class BallparkStats:
     def read_ballpark_stats(self):
         stats = ['overall', 'avg_lhb', 'avg_rhb', 'hr_lhb', 'hr_rhb']
         infile = '%s/Park Factor/Ball Park Factor.csv' %(self.statsDir)
-        print infile
-        reader = csv.reader(open(infile), quotechar='"', )
+        reader = csv.reader(open(infile), quotechar='"')
         header = reader.next()
-        print header
         for items in reader:
             team = items[0].upper()
             for i, stat_val in enumerate([float(x) for x in items[1:6]]):
