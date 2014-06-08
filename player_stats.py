@@ -9,12 +9,11 @@ class PlayerStats:
 
         self.stats = defaultdict(lambda: defaultdict( lambda: defaultdict( lambda: defaultdict (dict))))
 
-
-        # self.read_pitcher_home_away()
-        # self.read_pitcher_left_right()
-        # self.read_pitcher_total_stats()
-        # self.read_catcher_stats()
-        # self.read_batter_left_right()
+        self.read_pitcher_home_away()
+        self.read_pitcher_left_right()
+        self.read_pitcher_total_stats()
+        self.read_catcher_stats()
+        self.read_batter_left_right()
         self.read_batter_total_stats()
 
         self.printStats()
@@ -30,7 +29,7 @@ class PlayerStats:
                 for items in reader:
                     player = items[0].lower()
                     xfip = float(items[2])
-                    self.stats[player][stat][year][loc] = xfip
+                    self.stats[player][year][stat][loc] = xfip
 
 
     def read_pitcher_left_right(self):
@@ -44,7 +43,7 @@ class PlayerStats:
                 for items in reader:
                     player = items[0].lower()
                     for i, stat_val in enumerate([float(x) for x in items[2:6]]):
-                        self.stats[player][stats[i]][year][hand] = stat_val
+                        self.stats[player][year][stats[i]][hand] = stat_val
 
 
     def read_pitcher_total_stats(self):
@@ -57,7 +56,7 @@ class PlayerStats:
             for items in reader:
                 player = items[0].lower()
                 for i, stat_val in enumerate([float(x) for x in items[2:5]]):
-                    self.stats[player][stats[i]][year] = stat_val
+                    self.stats[player][year][stats[i]] = stat_val
 
 
     def read_catcher_stats(self):
@@ -70,7 +69,7 @@ class PlayerStats:
             for items in reader:
                 player = items[0].lower()
                 for i, stat_val in enumerate([float(x) for x in items[2:4]]):
-                    self.stats[player][stats[i]][year] = stat_val
+                    self.stats[player][year][stats[i]] = stat_val
 
     def read_batter_left_right(self):
         stats = ['pa', 'hr', 'k', 'woba']
@@ -83,7 +82,7 @@ class PlayerStats:
                 for items in reader:
                     player = items[0].lower()
                     for i, stat_val in enumerate([float(x) for x in items[2:6]]):
-                        self.stats[player][stats[i]][year][hand] = stat_val
+                        self.stats[player][year][stats[i]][hand] = stat_val
 
 
     def read_batter_total_stats(self):
@@ -110,9 +109,8 @@ class PlayerStats:
                 for i, stat_val in enumerate([float(x.rstrip('%')) for x in items[2:15]]):
                     if stats[i]=='bb_percentage_total':
                         stat_val/=100.0
-                    self.stats[player][stats[i]][year] = stat_val
+                    self.stats[player][year][stats[i]] = stat_val
 
 
     def printStats(self):
         print json.dumps(self.stats, indent=4)
-
