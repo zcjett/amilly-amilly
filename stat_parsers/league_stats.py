@@ -10,8 +10,6 @@ class LeagueStats:
         self.stats = defaultdict(dict)
 
         self.read_league_stats()
-        #self.print_stats()
-
 
     def read_league_stats(self):
         stats = ['k_percent', 'ops', 'sb', 'cs', 'hr', 'pa', 'bb', 'r', 'woba']
@@ -25,6 +23,33 @@ class LeagueStats:
                     if stats[i]=='k_percent':
                         stat_val/=100.0
                     self.stats[year][stats[i]] = stat_val
+
+    def get_k_percent(self, year):
+        return self.stats[year]['k_percent']
+
+    def get_ops(self, year):
+        return self.stats[year]['ops']
+
+    def get_sb(self, year):
+        return self.stats[year]['sb']
+
+    def get_cs(self, year):
+        return self.stats[year]['cs']
+
+    def get_hr(self, year):
+        return self.stats[year]['hr']
+
+    def get_pa(self, year):
+        return self.stats[year]['pa']
+
+    def get_bb(self, year):
+        return self.stats[year]['bb']
+
+    def get_r(self, year):
+        return self.stats[year]['r']
+
+    def get_woba(self, year):
+        return self.stats[year]['woba']
 
     def print_stats(self):
         print json.dumps(self.stats, indent=4)

@@ -10,8 +10,6 @@ class BallparkStats:
         self.stats = defaultdict(dict)
 
         self.read_ballpark_stats()
-        #self.printStats()
-
 
     def read_ballpark_stats(self):
         stats = ['overall', 'avg_lhb', 'avg_rhb', 'hr_lhb', 'hr_rhb']
@@ -23,6 +21,24 @@ class BallparkStats:
             for i, stat_val in enumerate([float(x) for x in items[1:6]]):
                 self.stats[team][stats[i]] = stat_val
 
+    def get_overall_park_factor(self, team):
+        return self.stats[team]['overall']
+
+    def get_avg_park_factor(self, team, hand):
+        if hand.lower()=='left':
+            return self.stats[team]['avg_lhb']
+        elif hand.lower()=='right':
+            return self.stats[team]['avg_rhb']
+        else:
+            return None
+
+    def get_hr_park_factor(self, team, hand):
+        if hand.lower()=='left':
+            return self.stats[team]['hr_lhb']
+        elif hand.lower()=='right':
+            return self.stats[team]['hr_rhb']
+        else:
+            return None
 
     def printStats(self):
         print json.dumps(self.stats, indent=4)

@@ -10,39 +10,38 @@ class TeamStats:
         self.stats = defaultdict(dict)
 
         self.name_map = {'Rockies': 'COL',
-                    'Blue Jays': 'TOR',
-                    'Tigers': 'DET',
-                    'Athletics': 'OAK',
-                    'Marlins': 'MIA',
-                    'Angels': 'LAA',
-                    'Dodgers': 'LOS',
-                    'White Sox': 'CWS',
-                    'Indians': 'CLE',
-                    'Rangers': 'TEX',
-                    'Orioles': 'BAL',
-                    'Brewers': 'MIL',
-                    'Yankees': 'NYY',
-                    'Giants': 'SFG',
-                    'Pirates': 'PIT',
-                    'Red Sox': 'BOS',
-                    'Twins': 'MIN',
-                    'Astros': 'HOU',
-                    'Rays': 'TAM',
-                    'Cardinals': 'STL',
-                    'Nationals': 'WAS',
-                    'Phillies': 'PHI',
-                    'Diamondbacks': 'ARI',
-                    'Braves': 'ATL',
-                    'Reds': 'CIN',
-                    'Mets': 'NYM',
-                    'Cubs': 'CHC',
-                    'Mariners': 'SEA',
-                    'Royals': 'KAN',
-                    'Padres': 'SDP'}
+                        'Blue Jays': 'TOR',
+                        'Tigers': 'DET',
+                        'Athletics': 'OAK',
+                        'Marlins': 'MIA',
+                        'Angels': 'LAA',
+                        'Dodgers': 'LOS',
+                        'White Sox': 'CWS',
+                        'Indians': 'CLE',
+                        'Rangers': 'TEX',
+                        'Orioles': 'BAL',
+                        'Brewers': 'MIL',
+                        'Yankees': 'NYY',
+                        'Giants': 'SFG',
+                        'Pirates': 'PIT',
+                        'Red Sox': 'BOS',
+                        'Twins': 'MIN',
+                        'Astros': 'HOU',
+                        'Rays': 'TAM',
+                        'Cardinals': 'STL',
+                        'Nationals': 'WAS',
+                        'Phillies': 'PHI',
+                        'Diamondbacks': 'ARI',
+                        'Braves': 'ATL',
+                        'Reds': 'CIN',
+                        'Mets': 'NYM',
+                        'Cubs': 'CHC',
+                        'Mariners': 'SEA',
+                        'Royals': 'KAN',
+                        'Padres': 'SDP'}
 
 
         self.read_team_stats()
-        #self.printStats()
 
 
     def read_team_stats(self):
@@ -57,6 +56,9 @@ class TeamStats:
 
     def get_name(self, mascot):
         return self.name_map[mascot]
+
+    def get_runs(self, team):
+        return self.stats[team]['runs_team']
 
     def printStats(self):
         print json.dumps(self.stats, indent=4)
