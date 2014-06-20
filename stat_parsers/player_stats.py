@@ -2,6 +2,8 @@ from collections import defaultdict
 import csv
 import json
 
+from random import choice, randint
+
 class PlayerStats:
 
     def __init__(self, statsDir):
@@ -15,7 +17,16 @@ class PlayerStats:
         self.read_catcher_stats()
         self.read_batter_left_right()
         self.read_batter_total_stats()
+        self.read_handedness()
+        self.read_positions_and_salaries()
 
+
+        # print len([name for name, stats in self.stats.items() if 'bats' in stats])
+        # print len([name for name, stats in self.stats.items() if 2014 in stats])
+        # print len([name for name, stats in self.stats.items() if 2013 in stats])
+
+    def printStats(self):
+        print json.dumps(self.stats, indent=4)
 
     def read_pitcher_home_away(self):
         stat = 'xfip'
@@ -227,5 +238,78 @@ class PlayerStats:
     def get_cs_total(self, year, player):
         return self.stats[player][year]['cs_total']
 
-    def printStats(self):
-        print json.dumps(self.stats, indent=4)
+    def read_handedness(self):
+        infile = '%s/player-handedness.csv' % self.statsDir
+        reader = csv.reader(open(infile), quotechar='"')
+        header = reader.next()
+        for items in reader:
+            player = '%s %s' %(items[0].lower(), items[1].lower())
+
+            throws = items[2]
+            if throws=='R':
+                self.stats[player]['throws'] = 'right'
+            else:
+                self.stats[player]['throws'] = 'left'
+
+            bats = items[3]
+            if bats=='R':
+                self.stats[player]['bats'] = 'right'
+            elif bats=='L':
+                self.stats[player]['bats'] = 'left'
+            else:
+                self.stats[player]['bats'] = 'switch'
+
+
+    def get_throwing_hand(self, player):
+        return self.stats[player]['throws']
+
+    def get_batting_hand(self, player):
+        return self.stats[player]['bats']
+
+
+    def read_positions_and_salaries(self):
+        # TODO: this is a daily stat
+        infile = '%s/Test Data/Salaries/Fanduel- 6.3.2014 Salaries.csv' %(self.statsDir)
+        reader = csv.reader(open(infile), quotechar='"')
+        for items in reader:
+            # Sample entry:
+            # OF,Colby RasmusDL,2.3,37,TAM@TOR,"$3,500 ",Add
+            position = items[0]
+            player, status = self._clean_name(items[1])
+            salary = self._clean_salary(items[5])
+            self.stats[player]['fielding_position'] = position
+            self.stats[player]['salary'] = salary
+            self.stats[player]['availability'] = status
+
+    def _clean_name(self, name):
+        # Returns a tuple (name, status) where status is "P", "DL" or None
+        if name.endswith('DL'):
+            return name.lower()[:-2], 'DL'
+        elif name.endswith('P'):
+            return name.lower()[:-1], 'P'
+        else:
+            return name.lower(), None
+
+    def _clean_salary(self, salary):
+        # Returns a numerical value for the given salary string
+        return int(salary.strip().replace('$', '').replace(',', ''))
+
+    def get_fielding_position(self, player):
+        return self.stats[player]['fielding_position']
+
+    def get_salary(self, player):
+        return self.stats[player]['salary']
+
+    def get_availability(self, player):
+        return self.stats[player]['availability']
+
+
+
+    # fix these...
+    def get_batting_position(self, player):
+        return randint(1, 9)
+
+    def get_team(self, player):
+        # TODO: random teams?!
+        teams = ['TAM', 'COL', 'TEX', 'MIN', 'KAN', 'MIL', 'BAL', 'SEA', 'LAA', 'SFG', 'LOS', 'DET', 'STL', 'PHI', 'TOR', 'CHC', 'CWS', 'SDP', 'CLE', 'ATL', 'ARI', 'BOS', 'OAK', 'WAS', 'NYY', 'CIN', 'NYM', 'PIT', 'MIA', 'HOU']
+        return choice(teams)

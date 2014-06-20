@@ -6,6 +6,7 @@ from stat_parsers.player_stats import PlayerStats
 from stat_parsers.ballpark_stats import BallparkStats
 from stat_parsers.team_stats import TeamStats
 from stat_parsers.league_stats import LeagueStats
+from stat_parsers.daily_stats import DailyStats
 from stat_equations import StatEquations
 
 
@@ -49,13 +50,14 @@ def main():
     ballpark_stats = BallparkStats(args.stats)
     team_stats = TeamStats(args.stats)
     league_stats = LeagueStats(args.stats)
+    daily_stats = DailyStats(args.stats)
 
     # start computing some stats here
-    eq = StatEquations(player_stats, team_stats, ballpark_stats, league_stats)
+    eq = StatEquations(player_stats, team_stats, ballpark_stats, league_stats, daily_stats)
 
     names = ['felix hernandez',
-     'ubaldo jimenez',
-     'cliff lee']
+             'ubaldo jimenez',
+             'cliff lee']
     for n in names:
         print n, eq.points_expected_for_k(n)
 

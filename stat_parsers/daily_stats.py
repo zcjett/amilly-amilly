@@ -2,51 +2,48 @@ from collections import defaultdict
 import csv
 import json
 
-class TeamStats:
+class DailyStats:
 
     def __init__(self, statsDir):
         self.statsDir = statsDir.rstrip('/')
 
+        self.stats = defaultdict(dict)
         self.stats = defaultdict(lambda: defaultdict( lambda: defaultdict( lambda: defaultdict (dict))))
 
         self.name_map = {'Rockies': 'COL',
-                        'Blue Jays': 'TOR',
-                        'Tigers': 'DET',
-                        'Athletics': 'OAK',
-                        'Marlins': 'MIA',
-                        'Angels': 'LAA',
-                        'Dodgers': 'LOS',
-                        'White Sox': 'CWS',
-                        'Indians': 'CLE',
-                        'Rangers': 'TEX',
-                        'Orioles': 'BAL',
-                        'Brewers': 'MIL',
-                        'Yankees': 'NYY',
-                        'Giants': 'SFG',
-                        'Pirates': 'PIT',
-                        'Red Sox': 'BOS',
-                        'Twins': 'MIN',
-                        'Astros': 'HOU',
-                        'Rays': 'TAM',
-                        'Cardinals': 'STL',
-                        'Nationals': 'WAS',
-                        'Phillies': 'PHI',
-                        'Diamondbacks': 'ARI',
-                        'Braves': 'ATL',
-                        'Reds': 'CIN',
-                        'Mets': 'NYM',
-                        'Cubs': 'CHC',
-                        'Mariners': 'SEA',
-                        'Royals': 'KAN',
-                        'Padres': 'SDP'}
+                'Blue Jays': 'TOR',
+                'Tigers': 'DET',
+                'Athletics': 'OAK',
+                'Marlins': 'MIA',
+                'Angels': 'LAA',
+                'Dodgers': 'LOS',
+                'White Sox': 'CWS',
+                'Indians': 'CLE',
+                'Rangers': 'TEX',
+                'Orioles': 'BAL',
+                'Brewers': 'MIL',
+                'Yankees': 'NYY',
+                'Giants': 'SFG',
+                'Pirates': 'PIT',
+                'Red Sox': 'BOS',
+                'Twins': 'MIN',
+                'Astros': 'HOU',
+                'Rays': 'TAM',
+                'Cardinals': 'STL',
+                'Nationals': 'WAS',
+                'Phillies': 'PHI',
+                'Diamondbacks': 'ARI',
+                'Braves': 'ATL',
+                'Reds': 'CIN',
+                'Mets': 'NYM',
+                'Cubs': 'CHC',
+                'Mariners': 'SEA',
+                'Royals': 'KAN',
+                'Padres': 'SDP'}
+
 
         self.read_team_stats()
         self.read_team_left_right()
-        self.read_daily_matchups()
-
-
-    def printStats(self):
-        print json.dumps(self.stats, indent=4)
 
     def get_name(self, mascot):
         return self.name_map[mascot]
@@ -93,19 +90,5 @@ class TeamStats:
         else:
             return None
 
-    def read_daily_matchups(self):
-        # TODO: hard-coded daily stats
-        infile = '%s/Test Data/Salaries/Fanduel- 6.3.2014 Salaries.csv' %(self.statsDir)
-        reader = csv.reader(open(infile), quotechar='"')
-        for items in reader:
-            away, home = items[4].split('@')
-            self.stats[home]['home_or_away'] = 'home'
-            self.stats[away]['home_or_away'] = 'away'
-            self.stats[home]['opponent'] = away
-            self.stats[away]['opponent'] = home
-
-    def get_home_or_away(self, team):
-        return self.stats[team]['home_or_away']
-
-    def get_opponent(self, team):
-        return self.stats[team]['opponent']
+    def printStats(self):
+        print json.dumps(self.stats, indent=4)
