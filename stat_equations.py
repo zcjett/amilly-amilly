@@ -4,18 +4,23 @@ from stat_parsers.player_stats import PlayerStats
 from stat_parsers.ballpark_stats import BallparkStats
 from stat_parsers.team_stats import TeamStats
 from stat_parsers.league_stats import LeagueStats
+from stat_parsers.league_stats import Dailystats
 import sys
 import json
 
 class StatEquations:
 
     def __init__(self, player_stats, team_stats, ballpark_stats, league_stats, daily_stats):
-
         self.player_stats = player_stats
+        ''':type: PlayerStats'''
         self.ballpark_stats = ballpark_stats
+        ''':type: BallparkStats'''
         self.team_stats = team_stats
+        ''':type: TeamStats'''
         self.league_stats = league_stats
+        ''':type: LeagueStats'''
         self.daily_stats = daily_stats
+        ''':type: DailyStats'''
 
         self.year = 2014
 
