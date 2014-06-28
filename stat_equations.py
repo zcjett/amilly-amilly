@@ -1,13 +1,3 @@
-from collections import defaultdict
-
-from stat_parsers.player_stats import PlayerStats
-from stat_parsers.ballpark_stats import BallparkStats
-from stat_parsers.team_stats import TeamStats
-from stat_parsers.league_stats import LeagueStats
-from stat_parsers.league_stats import Dailystats
-import sys
-import json
-
 class StatEquations:
 
     def __init__(self, player_stats, team_stats, ballpark_stats, league_stats, daily_stats):
@@ -39,4 +29,3 @@ class StatEquations:
         opp_k_percentage = (self.team_stats.get_so(self.year, oppTeam, playerPitchHand) / self.team_stats.get_pa(self.year, oppTeam, playerPitchHand)) / self.league_stats.get_k_percent(self.year)
 
         return pitcher_k_per_9 * (expected_ip/9) * opp_k_percentage
-

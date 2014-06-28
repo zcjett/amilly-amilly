@@ -47,19 +47,22 @@ def main():
     #     mcmc.find_simulated_annealing_solution()
 
     player_stats = PlayerStats(args.stats)
-    ballpark_stats = BallparkStats(args.stats)
-    team_stats = TeamStats(args.stats)
-    league_stats = LeagueStats(args.stats)
-    daily_stats = DailyStats(args.stats)
+    # ballpark_stats = BallparkStats(args.stats)
+    # team_stats = TeamStats(args.stats)
+    # league_stats = LeagueStats(args.stats)
+    # daily_stats = DailyStats(args.stats)
+
+
+
 
     # start computing some stats here
-    eq = StatEquations(player_stats, team_stats, ballpark_stats, league_stats, daily_stats)
-
-    names = ['felix hernandez',
-             'ubaldo jimenez',
-             'cliff lee']
-    for n in names:
-        print n, eq.points_expected_for_k(n)
+    # eq = StatEquations(player_stats, team_stats, ballpark_stats, league_stats, daily_stats)
+    #
+    # names = ['felix hernandez',
+    #          'ubaldo jimenez',
+    #          'cliff lee']
+    # for n in names:
+    #     print n, eq.points_expected_for_k(n)
 
 
 

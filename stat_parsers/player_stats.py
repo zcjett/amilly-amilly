@@ -1,8 +1,12 @@
 from collections import defaultdict
+from team_stats import get_team_mascots
 import csv
 import json
+import urllib2
+import re
 
-from random import choice, randint
+from bs4 import BeautifulSoup
+from random import randint
 
 class PlayerStats:
 
@@ -11,19 +15,21 @@ class PlayerStats:
 
         self.stats = defaultdict(lambda: defaultdict( lambda: defaultdict( lambda: defaultdict (dict))))
 
-        self.read_pitcher_home_away()
-        self.read_pitcher_left_right()
-        self.read_pitcher_total_stats()
-        self.read_catcher_stats()
-        self.read_batter_left_right()
-        self.read_batter_total_stats()
-        self.read_handedness()
-        self.read_positions_and_salaries()
-
+        # self.read_pitcher_home_away()
+        # self.read_pitcher_left_right()
+        # self.read_pitcher_total_stats()
+        # self.read_catcher_stats()
+        # self.read_batter_left_right()
+        # self.read_batter_total_stats()
+        # self.read_handedness()
+        # self.read_positions_and_salaries()
+        self.read_rosters()
 
         # print len([name for name, stats in self.stats.items() if 'bats' in stats])
         # print len([name for name, stats in self.stats.items() if 2014 in stats])
         # print len([name for name, stats in self.stats.items() if 2013 in stats])
+
+        self.printStats()
 
     def printStats(self):
         print json.dumps(self.stats, indent=4)
@@ -238,35 +244,6 @@ class PlayerStats:
     def get_cs_total(self, year, player):
         return self.stats[player][year]['cs_total']
 
-    def read_handedness(self):
-        infile = '%s/player-handedness.csv' % self.statsDir
-        reader = csv.reader(open(infile), quotechar='"')
-        header = reader.next()
-        for items in reader:
-            player = '%s %s' %(items[0].lower(), items[1].lower())
-
-            throws = items[2]
-            if throws=='R':
-                self.stats[player]['throws'] = 'right'
-            else:
-                self.stats[player]['throws'] = 'left'
-
-            bats = items[3]
-            if bats=='R':
-                self.stats[player]['bats'] = 'right'
-            elif bats=='L':
-                self.stats[player]['bats'] = 'left'
-            else:
-                self.stats[player]['bats'] = 'switch'
-
-
-    def get_throwing_hand(self, player):
-        return self.stats[player]['throws']
-
-    def get_batting_hand(self, player):
-        return self.stats[player]['bats']
-
-
     def read_positions_and_salaries(self):
         # TODO: this is a daily stat
         infile = '%s/Test Data/Salaries/Fanduel- 6.3.2014 Salaries.csv' %(self.statsDir)
@@ -304,12 +281,51 @@ class PlayerStats:
         return self.stats[player]['availability']
 
 
+    def read_positions_and_salaries(self):
+        # TODO: this is a daily stat
+        infile = '%s/Test Data/Salaries/Fanduel- 6.3.2014 Salaries.csv' %(self.statsDir)
+        reader = csv.reader(open(infile), quotechar='"')
+        for items in reader:
+            # Sample entry:
+            # OF,Colby RasmusDL,2.3,37,TAM@TOR,"$3,500 ",Add
+            position = items[0]
+            player, status = self._clean_name(items[1])
+            salary = self._clean_salary(items[5])
+            self.stats[player]['fielding_position'] = position
+            self.stats[player]['salary'] = salary
+            self.stats[player]['availability'] = status
+
+    def read_rosters(self):
+        handMap = {'R': 'right',
+                   'L': 'left',
+                   'B': 'switch',
+                   'S': 'switch'}
+
+        for mascot in get_team_mascots():
+            print mascot
+            url = 'http://espn.go.com/mlb/team/roster/_/name/bos/sort/lastName/boston-red-sox'
+            doc = urllib2.urlopen(url).read()
+            soup = BeautifulSoup(doc)
+            tab = soup.find('table')
+            # header = [td.text for td in tab.find_all('tr')[1].find_all('td')]
+            # Header for data is : ['NO.', 'NAME', 'POS', 'BAT', 'THW', 'AGE', 'HT', 'WT', 'BIRTH PLACE', 'SALARY']
+            playerData = [[td.text for td in tr.find_all('td')] for tr in tab.find_all('tr')[2:]]
+            for p in playerData:
+                # TODO: could use this DL information.
+                player = re.sub('DL[0-9]*$', '', p[1]).strip().lower()
+                # TODO: could use this position info
+                position = p[2]
+                self.stats[player]['bats'] = handMap[p[3]]
+                self.stats[player]['throws'] = handMap[p[4]]
+
+    def get_throwing_hand(self, player):
+        return self.stats[player]['throws']
+
+    def get_batting_hand(self, player):
+        return self.stats[player]['bats']
+
+
 
     # fix these...
     def get_batting_position(self, player):
         return randint(1, 9)
-
-    def get_team(self, player):
-        # TODO: random teams?!
-        teams = ['TAM', 'COL', 'TEX', 'MIN', 'KAN', 'MIL', 'BAL', 'SEA', 'LAA', 'SFG', 'LOS', 'DET', 'STL', 'PHI', 'TOR', 'CHC', 'CWS', 'SDP', 'CLE', 'ATL', 'ARI', 'BOS', 'OAK', 'WAS', 'NYY', 'CIN', 'NYM', 'PIT', 'MIA', 'HOU']
-        return choice(teams)

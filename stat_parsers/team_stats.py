@@ -2,54 +2,82 @@ from collections import defaultdict
 import csv
 import json
 
+
 class TeamStats:
 
     def __init__(self, statsDir):
         self.statsDir = statsDir.rstrip('/')
-
         self.stats = defaultdict(lambda: defaultdict( lambda: defaultdict( lambda: defaultdict (dict))))
 
-        self.name_map = {'Rockies': 'COL',
-                        'Blue Jays': 'TOR',
-                        'Tigers': 'DET',
-                        'Athletics': 'OAK',
-                        'Marlins': 'MIA',
-                        'Angels': 'LAA',
-                        'Dodgers': 'LOS',
-                        'White Sox': 'CWS',
-                        'Indians': 'CLE',
-                        'Rangers': 'TEX',
-                        'Orioles': 'BAL',
-                        'Brewers': 'MIL',
-                        'Yankees': 'NYY',
-                        'Giants': 'SFG',
-                        'Pirates': 'PIT',
-                        'Red Sox': 'BOS',
-                        'Twins': 'MIN',
-                        'Astros': 'HOU',
-                        'Rays': 'TAM',
-                        'Cardinals': 'STL',
-                        'Nationals': 'WAS',
-                        'Phillies': 'PHI',
-                        'Diamondbacks': 'ARI',
-                        'Braves': 'ATL',
-                        'Reds': 'CIN',
-                        'Mets': 'NYM',
-                        'Cubs': 'CHC',
-                        'Mariners': 'SEA',
-                        'Royals': 'KAN',
-                        'Padres': 'SDP'}
+        self.team_names = {
+            'COL': {'mascot': 'Rockies',
+                    'locaiton': 'Colorado'},
+            'TOR': {'mascot': 'Blue Jays',
+                    'location': ''},
+            'DET': {'mascot': 'Tigers',
+                    'location': ''},
+            'OAK': {'mascot': 'Athletics',
+                    'location': ''},
+            'MIA': {'mascot': 'Marlins',
+                    'location': ''},
+            'LAA': {'mascot': 'Angels',
+                    'location': ''},
+            'LOS': {'mascot': 'Dodgers',
+                    'location': ''},
+            'CWS': {'mascot': 'White Sox',
+                    'location': ''},
+            'CLE': {'mascot': 'Indians',
+                    'location': ''},
+            'TEX': {'mascot': 'Rangrs',
+                    'location': ''},
+            'BAL': {'mascot': 'Orioles',
+                    'location': ''},
+            'MIL': {'mascot': 'Brewers',
+                    'location': ''},
+            'NYY': {'mascot': 'Yankees',
+                    'location': ''},
+            'SFG': {'mascot': 'Giants',
+                    'location': ''},
+            'PIT': {'mascot': 'Pirates',
+                    'location': ''},
+            'BOS': {'mascot': 'Red Sox',
+                    'location': ''},
+            'MIN': {'mascot': 'Twins',
+                    'location': ''},
+            'HOU': {'mascot': 'Astros',
+                    'location': ''},
+            'TAM': {'mascot': 'Rays',
+                    'location': ''},
+            'STL': {'mascot': 'Cardinals',
+                    'location': ''},
+            'WAS': {'mascot': 'Nationals',
+                    'location': ''},
+            'PHI': {'mascot': 'Phillies',
+                    'location': ''},
+            'ARI': {'mascot': 'Diaomndbacks',
+                    'location': ''},
+            'ATL': {'mascot': 'Braves',
+                    'location': ''},
+            'CIN': {'mascot': 'Reds',
+                    'location': ''},
+            'NYM': {'mascot': 'Mets',
+                    'location': ''},
+            'CHC': {'mascot': 'Cubs',
+                    'location': ''},
+            'SEA': {'mascot': 'Mariners',
+                    'location': ''},
+            'KAN': {'mascot': 'Royals',
+                    'location': ''},
+            'SDP': {'mascot': 'Padres',
+                    'location': ''}
+        }
 
         self.read_team_stats()
         self.read_team_left_right()
         self.read_daily_matchups()
 
-
     def printStats(self):
         print json.dumps(self.stats, indent=4)
-
-    def get_name(self, mascot):
-        return self.name_map[mascot]
 
     def read_team_stats(self):
         years = [2013, 2014]
@@ -58,7 +86,7 @@ class TeamStats:
             reader = csv.reader(open(infile), quotechar='"')
             header = reader.next()
             for items in reader:
-                team = self.get_name(items[0])
+                team = get_team_name(items[0])
                 self.stats[team][year]['runs_team'] = float(items[1])
 
     def get_runs(self, year, team):
@@ -73,7 +101,7 @@ class TeamStats:
                 reader = csv.reader(open(infile), quotechar='"')
                 header = reader.next()
                 for items in reader:
-                    team = self.get_name(items[0])
+                    team = get_team_name(items[0])
                     for i, stat_val in enumerate([float(x) for x in items[1:3]]):
                         self.stats[team][year][stats[i]][hand] = stat_val
 
@@ -109,3 +137,15 @@ class TeamStats:
 
     def get_opponent(self, team):
         return self.stats[team]['opponent']
+
+
+    def get_teams(self):
+        return self.team_mascot.values()
+
+    def get_team_by_mascot(self, mascot):
+        for k,v in self.team_names:
+            if v[mascot]
+        return self.team_mascot[mascot]
+
+    def get_team_by_city(self, city):
+        return self.team_city[city]
