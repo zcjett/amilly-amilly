@@ -102,5 +102,7 @@ class StatEquations:
 
         return batter_walk_percentage * exp_ab * pitcher_eff_walk
 
+    def batter_points_expected_for_hr(self, player):
+        batter_hr_percentage = self.player_stats.get_hr_total(self,year,player) /
 
 
