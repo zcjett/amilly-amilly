@@ -1,4 +1,4 @@
-from team_stats import TeamStats
+from team_stats import *
 from collections import defaultdict
 import csv
 import json
@@ -21,7 +21,7 @@ class DailyStats:
             reader = csv.reader(open(infile), quotechar='"')
             header = reader.next()
             for items in reader:
-                team = TeamStats.get_team_by_mascot(items[0])
+                team = get_team_by_mascot(items[0])
                 self.stats[team][year]['runs_team'] = float(items[1])
 
     def get_runs(self, year, team):
@@ -36,7 +36,7 @@ class DailyStats:
                 reader = csv.reader(open(infile), quotechar='"')
                 header = reader.next()
                 for items in reader:
-                    team = TeamStats.get_team_by_mascot(items[0])
+                    team = get_team_by_mascot(items[0])
                     for i, stat_val in enumerate([float(x) for x in items[1:3]]):
                         self.stats[team][year][stats[i]][hand] = stat_val
 

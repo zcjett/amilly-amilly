@@ -1,12 +1,12 @@
+import time
 from team_stats import *
 from collections import defaultdict
 import csv
 import json
 import urllib2
 import re
-
 from bs4 import BeautifulSoup
-from random import randint
+import sys
 
 class PlayerStats:
 
@@ -14,25 +14,31 @@ class PlayerStats:
         self.statsDir = statsDir.rstrip('/')
 
         self.stats = defaultdict(lambda: defaultdict( lambda: defaultdict( lambda: defaultdict (dict))))
+        self.starting_pitchers = {}
 
-        # self.read_pitcher_home_away()
-        # self.read_pitcher_left_right()
-        # self.read_pitcher_total_stats()
-        # self.read_catcher_stats()
-        # self.read_batter_left_right()
-        # self.read_batter_total_stats()
-        # self.read_handedness()
-        # self.read_positions_and_salaries()
         self.read_rosters()
+        self.read_pitcher_home_away()
+        self.read_pitcher_left_right()
+        self.read_pitcher_total_stats()
+        self.read_catcher_stats()
+        self.read_batter_left_right()
+        self.read_batter_total_stats()
+
+        # must be read after rosters
+        self.read_positions_and_salaries()
 
         # print len([name for name, stats in self.stats.items() if 'bats' in stats])
         # print len([name for name, stats in self.stats.items() if 2014 in stats])
         # print len([name for name, stats in self.stats.items() if 2013 in stats])
 
-        self.printStats()
+        # self.printStats()
+        # self.printPitchers()
 
     def printStats(self):
         print json.dumps(self.stats, indent=4)
+
+    def printPitchers(self):
+        print json.dumps(self.starting_pitchers, indent=4)
 
     def read_pitcher_home_away(self):
         stat = 'xfip'
@@ -45,7 +51,7 @@ class PlayerStats:
                 for items in reader:
                     player = items[0].lower()
                     xfip = float(items[2])
-                    self.stats[player][year][stat][loc] = xfip
+                    self.stats[player][year][stat][loc.lower()] = xfip
 
     def get_xfip(self, year, player, homeOrAway):
         return self.stats[player][year]['xfip'][homeOrAway]
@@ -226,8 +232,8 @@ class PlayerStats:
     def get_hr_total(self, year, player):
         return self.stats[player][year]['hr_total']
 
-    def get_ah_total(self, year, player):
-        return self.stats[player][year]['ah_total']
+    def get_ab_total(self, year, player):
+        return self.stats[player][year]['ab_total']
 
     def get_pa_total(self, year, player):
         return self.stats[player][year]['pa_total']
@@ -256,16 +262,13 @@ class PlayerStats:
             salary = self._clean_salary(items[5])
             self.stats[player]['fielding_position'] = position
             self.stats[player]['salary'] = salary
-            self.stats[player]['availability'] = status
 
-    def _clean_name(self, name):
-        # Returns a tuple (name, status) where status is "P", "DL" or None
-        if name.endswith('DL'):
-            return name.lower()[:-2], 'DL'
-        elif name.endswith('P'):
-            return name.lower()[:-1], 'P'
-        else:
-            return name.lower(), None
+            starting = None
+            if status=='P':
+                starting = True
+            if status=='DL':
+                starting = False
+            self.stats[player]['starting'] = starting
 
     def _clean_salary(self, salary):
         # Returns a numerical value for the given salary string
@@ -277,23 +280,33 @@ class PlayerStats:
     def get_salary(self, player):
         return self.stats[player]['salary']
 
-    def get_availability(self, player):
-        return self.stats[player]['availability']
+    def get_starting(self, player):
+        return self.stats[player]['starting']
 
 
     def read_positions_and_salaries(self):
-        # TODO: this is a daily stat
-        infile = '%s/Test Data/Salaries/Fanduel- 6.3.2014 Salaries.csv' %(self.statsDir)
-        reader = csv.reader(open(infile), quotechar='"')
+        try:
+            date = time.strftime('%Y-%m-%d')
+            # TODO: this is a daily stat
+            infile = '%s/Daily/%s-fanduel-salaries.csv' %(self.statsDir, date)
+            reader = csv.reader(open(infile), quotechar='"')
+        except IOError:
+            print "Salaries don't exist, dipshit."
         for items in reader:
             # Sample entry:
             # OF,Colby RasmusDL,2.3,37,TAM@TOR,"$3,500 ",Add
             position = items[0]
             player, status = self._clean_name(items[1])
+            player = self._normalize_name(player)
             salary = self._clean_salary(items[5])
             self.stats[player]['fielding_position'] = position
             self.stats[player]['salary'] = salary
             self.stats[player]['availability'] = status
+            if status=='P':
+                team = self.get_team(player)
+                print 'PLAYER', player
+                print 'TEAM', team
+                self.starting_pitchers[team] = player
 
     def read_rosters(self):
         handMap = {'R': 'right',
@@ -339,7 +352,28 @@ class PlayerStats:
     def get_team(self, player):
         return self.stats[player]['team']
 
-
-    # fix these...
     def get_batting_position(self, player):
-        return randint(1, 9)
+        return 1
+        #return randint(1, 9)
+
+    def get_starting_pitcher(self, team):
+        return self.starting_pitchers[team]
+
+    def _normalize_name(self, name):
+        """
+        Zach claimed on 2014-06-28 that we will only need this sub for ~30 names.
+        """
+        if name.lower()=="tom milone":
+            return "tommy milone"
+        if name.lower()=="michael bolsinger":
+            return "mike bolsinger"
+        return name
+
+    def _clean_name(self, name):
+        # Returns a tuple (name, status) where status is "P", "DL" or None
+        if name.endswith('DL'):
+            return name.lower()[:-2], 'DL'
+        elif name.endswith('P'):
+            return name.lower()[:-1], 'P'
+        else:
+            return name.lower(), None
