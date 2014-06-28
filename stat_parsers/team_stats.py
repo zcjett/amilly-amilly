@@ -3,74 +3,96 @@ import csv
 import json
 
 
+
+TEAM_NAMES = {
+    'COL': {'mascot': 'Rockies',
+            'location': 'Colorado'},
+    'TOR': {'mascot': 'Blue Jays',
+            'location': 'Toronto'},
+    'DET': {'mascot': 'Tigers',
+            'location': 'Detroit'},
+    'OAK': {'mascot': 'Athletics',
+            'location': 'Oakland'},
+    'MIA': {'mascot': 'Marlins',
+            'location': 'Miami'},
+    'LAA': {'mascot': 'Angels',
+            'location': 'Los Angeles'},
+    'LOS': {'mascot': 'Dodgers',
+            'location': 'Los Angeles'},
+    'CWS': {'mascot': 'White Sox',
+            'location': 'Chicago'},
+    'CLE': {'mascot': 'Indians',
+            'location': 'Cleveland'},
+    'TEX': {'mascot': 'Rangrs',
+            'location': 'Texas'},
+    'BAL': {'mascot': 'Orioles',
+            'location': 'Baltimore'},
+    'MIL': {'mascot': 'Brewers',
+            'location': 'Milwaukee'},
+    'NYY': {'mascot': 'Yankees',
+            'location': 'New York'},
+    'SFG': {'mascot': 'Giants',
+            'location': 'San Francisco'},
+    'PIT': {'mascot': 'Pirates',
+            'location': 'Pittsburgh'},
+    'BOS': {'mascot': 'Red Sox',
+            'location': 'Boston'},
+    'MIN': {'mascot': 'Twins',
+            'location': 'Minnesota'},
+    'HOU': {'mascot': 'Astros',
+            'location': 'Houston'},
+    'TAM': {'mascot': 'Rays',
+            'location': 'Tampa Bay'},
+    'STL': {'mascot': 'Cardinals',
+            'location': 'St Louis'},
+    'WAS': {'mascot': 'Nationals',
+            'location': 'Washington'},
+    'PHI': {'mascot': 'Phillies',
+            'location': 'Philadelphia'},
+    'ARI': {'mascot': 'Diaomndbacks',
+            'location': 'Arizona'},
+    'ATL': {'mascot': 'Braves',
+            'location': 'Atlanta'},
+    'CIN': {'mascot': 'Reds',
+            'location': 'Cincinnati'},
+    'NYM': {'mascot': 'Mets',
+            'location': 'New York'},
+    'CHC': {'mascot': 'Cubs',
+            'location': 'Chicago'},
+    'SEA': {'mascot': 'Mariners',
+            'location': 'Seattle'},
+    'KAN': {'mascot': 'Royals',
+            'location': 'Kansas City'},
+    'SDP': {'mascot': 'Padres',
+            'location': 'San Diego'}
+}
+
+def get_teams():
+    return TEAM_NAMES.keys()
+
+def get_team_by_mascot(mascot):
+    for k,v in TEAM_NAMES:
+        if v[mascot].lower()==mascot.lower():
+            return k
+    return None
+
+def get_team_by_city(city):
+    for k,v in TEAM_NAMES:
+        if v[city].lower()==city.lower():
+            return k
+    return None
+
+def get_team_mascot(team):
+    return TEAM_NAMES[team]['mascot']
+
+def get_team_location(team):
+    return TEAM_NAMES[team]['location']
+
 class TeamStats:
 
     def __init__(self, statsDir):
         self.statsDir = statsDir.rstrip('/')
         self.stats = defaultdict(lambda: defaultdict( lambda: defaultdict( lambda: defaultdict (dict))))
-
-        self.team_names = {
-            'COL': {'mascot': 'Rockies',
-                    'locaiton': 'Colorado'},
-            'TOR': {'mascot': 'Blue Jays',
-                    'location': ''},
-            'DET': {'mascot': 'Tigers',
-                    'location': ''},
-            'OAK': {'mascot': 'Athletics',
-                    'location': ''},
-            'MIA': {'mascot': 'Marlins',
-                    'location': ''},
-            'LAA': {'mascot': 'Angels',
-                    'location': ''},
-            'LOS': {'mascot': 'Dodgers',
-                    'location': ''},
-            'CWS': {'mascot': 'White Sox',
-                    'location': ''},
-            'CLE': {'mascot': 'Indians',
-                    'location': ''},
-            'TEX': {'mascot': 'Rangrs',
-                    'location': ''},
-            'BAL': {'mascot': 'Orioles',
-                    'location': ''},
-            'MIL': {'mascot': 'Brewers',
-                    'location': ''},
-            'NYY': {'mascot': 'Yankees',
-                    'location': ''},
-            'SFG': {'mascot': 'Giants',
-                    'location': ''},
-            'PIT': {'mascot': 'Pirates',
-                    'location': ''},
-            'BOS': {'mascot': 'Red Sox',
-                    'location': ''},
-            'MIN': {'mascot': 'Twins',
-                    'location': ''},
-            'HOU': {'mascot': 'Astros',
-                    'location': ''},
-            'TAM': {'mascot': 'Rays',
-                    'location': ''},
-            'STL': {'mascot': 'Cardinals',
-                    'location': ''},
-            'WAS': {'mascot': 'Nationals',
-                    'location': ''},
-            'PHI': {'mascot': 'Phillies',
-                    'location': ''},
-            'ARI': {'mascot': 'Diaomndbacks',
-                    'location': ''},
-            'ATL': {'mascot': 'Braves',
-                    'location': ''},
-            'CIN': {'mascot': 'Reds',
-                    'location': ''},
-            'NYM': {'mascot': 'Mets',
-                    'location': ''},
-            'CHC': {'mascot': 'Cubs',
-                    'location': ''},
-            'SEA': {'mascot': 'Mariners',
-                    'location': ''},
-            'KAN': {'mascot': 'Royals',
-                    'location': ''},
-            'SDP': {'mascot': 'Padres',
-                    'location': ''}
-        }
 
         self.read_team_stats()
         self.read_team_left_right()
@@ -86,7 +108,7 @@ class TeamStats:
             reader = csv.reader(open(infile), quotechar='"')
             header = reader.next()
             for items in reader:
-                team = get_team_name(items[0])
+                team = self.get_team_by_mascot(items[0])
                 self.stats[team][year]['runs_team'] = float(items[1])
 
     def get_runs(self, year, team):
@@ -101,7 +123,7 @@ class TeamStats:
                 reader = csv.reader(open(infile), quotechar='"')
                 header = reader.next()
                 for items in reader:
-                    team = get_team_name(items[0])
+                    team = self.get_team_by_mascot(items[0])
                     for i, stat_val in enumerate([float(x) for x in items[1:3]]):
                         self.stats[team][year][stats[i]][hand] = stat_val
 
@@ -137,15 +159,3 @@ class TeamStats:
 
     def get_opponent(self, team):
         return self.stats[team]['opponent']
-
-
-    def get_teams(self):
-        return self.team_mascot.values()
-
-    def get_team_by_mascot(self, mascot):
-        for k,v in self.team_names:
-            if v[mascot]
-        return self.team_mascot[mascot]
-
-    def get_team_by_city(self, city):
-        return self.team_city[city]

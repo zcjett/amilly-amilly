@@ -1,5 +1,5 @@
+from team_stats import *
 from collections import defaultdict
-from team_stats import get_team_mascots
 import csv
 import json
 import urllib2
@@ -301,20 +301,32 @@ class PlayerStats:
                    'B': 'switch',
                    'S': 'switch'}
 
-        for mascot in get_team_mascots():
-            print mascot
-            url = 'http://espn.go.com/mlb/team/roster/_/name/bos/sort/lastName/boston-red-sox'
+        for team in get_teams():
+            url_team = team
+            if team=='LOS':
+                url_team = 'LAD'
+            elif team=='CWS':
+                url_team='CHW'
+            elif team=='SDP':
+                url_team='SD'
+            elif team=='SFG':
+                url_team='SF'
+
+            url_mascot = get_team_mascot(team).lower().replace(' ', '-')
+            url_location = get_team_location(team).lower().replace(' ', '-')
+            url = 'http://espn.go.com/mlb/team/roster/_/name/%s/sort/lastName/%s-%s' %(url_team.lower(), url_location, url_mascot)
             doc = urllib2.urlopen(url).read()
             soup = BeautifulSoup(doc)
             tab = soup.find('table')
             # header = [td.text for td in tab.find_all('tr')[1].find_all('td')]
             # Header for data is : ['NO.', 'NAME', 'POS', 'BAT', 'THW', 'AGE', 'HT', 'WT', 'BIRTH PLACE', 'SALARY']
-            playerData = [[td.text for td in tr.find_all('td')] for tr in tab.find_all('tr')[2:]]
-            for p in playerData:
+            player_data = [[td.text for td in tr.find_all('td')] for tr in tab.find_all('tr')[2:]]
+            for p in player_data:
                 # TODO: could use this DL information.
                 player = re.sub('DL[0-9]*$', '', p[1]).strip().lower()
                 # TODO: could use this position info
                 position = p[2]
+                self.stats[player]['team'] = team
                 self.stats[player]['bats'] = handMap[p[3]]
                 self.stats[player]['throws'] = handMap[p[4]]
 
@@ -324,6 +336,8 @@ class PlayerStats:
     def get_batting_hand(self, player):
         return self.stats[player]['bats']
 
+    def get_team(self, player):
+        return self.stats[player]['team']
 
 
     # fix these...
