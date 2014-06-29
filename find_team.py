@@ -29,23 +29,6 @@ def main():
     parser.add_argument('--mcmc', action='store_true', help='Find a team using the MCMC approach.')
     args = parser.parse_args()
 
-    # players = PlayerSalaryScores()
-    # players.read_positions_and_salaries(args.salaries)
-    # players.read_projections(args.projections)
-    #
-    # names = players.get_names()
-    # classes = [players.get_position(n) for n in names]
-    # values = [players.get_score(n) for n in names]
-    # weights = [players.get_salary(n) for n in names]
-    #
-    # if args.knapsack:
-    #     knapsack = ModifiedKnapsack(names, classes, values, weights, CAPACITY, TEAM_COMP)
-    #    #knapsack.find_solution()
-    #
-    # if args.mcmc:
-    #     mcmc = TeamMCMC(names, classes, values, weights, CAPACITY, TEAM_COMP)
-    #     mcmc.find_simulated_annealing_solution()
-
     print 'Player Stats...'
     player_stats = PlayerStats(args.stats)
     print 'Ballpark Stats...'
@@ -70,15 +53,44 @@ def main():
     #     print '\t', eq.pitcher_points_expected_for_er(n)
     #     print '\t', eq.pitcher_points_expected_for_k(n)
     #     print '\t', eq.pitcher_expected_ip(n)
+    #
+    # names = ['mike trout',
+    #          'yasiel puig',
+    #          'justin upton',
+    #          'jean segura']
+    # for n in names:
+    #     print n
+    #     print '\t hits', eq.batter_points_expected_for_hits(n)
+    #     print '\t walk', eq.batter_points_expected_for_walks(n)
+    #     print '\t hr  ', eq.batter_points_expected_for_hr(n)
+    #     print '\t stol', eq.batter_points_expected_for_sb(n)
+    #     print '\t rbis', eq.batter_points_expected_for_rbi(n)
+    #     print '\t runs', eq.batter_points_expected_for_runs(n)
 
-    names = ['mike trout',
-             'yasiel puig',
-             'justin upton']
+
+    names = player_stats.get_active_players()
+    names = player_stats.starting_pitchers.values()
+
     for n in names:
-        print n
-        print '\t', eq.batter_points_expected_for_hits(n)
-        print '\t', eq.batter_points_expected_for_walks(n)
+        print n, eq.get_score(n)
 
+
+    # players = PlayerSalaryScores()
+    # players.read_positions_and_salaries(args.salaries)
+    # players.read_projections(args.projections)
+    #
+    # names = players.get_names()
+    # classes = [players.get_position(n) for n in names]
+    # values = [players.get_score(n) for n in names]
+    # weights = [players.get_salary(n) for n in names]
+    #
+    # if args.knapsack:
+    #     knapsack = ModifiedKnapsack(names, classes, values, weights, CAPACITY, TEAM_COMP)
+    #    #knapsack.find_solution()
+    #
+    # if args.mcmc:
+    #     mcmc = TeamMCMC(names, classes, values, weights, CAPACITY, TEAM_COMP)
+    #     mcmc.find_simulated_annealing_solution()
 
 
 if __name__ == '__main__':

@@ -251,40 +251,6 @@ class PlayerStats:
         return self.stats[player][year]['cs_total']
 
     def read_positions_and_salaries(self):
-        # TODO: this is a daily stat
-        infile = '%s/Test Data/Salaries/Fanduel- 6.3.2014 Salaries.csv' %(self.statsDir)
-        reader = csv.reader(open(infile), quotechar='"')
-        for items in reader:
-            # Sample entry:
-            # OF,Colby RasmusDL,2.3,37,TAM@TOR,"$3,500 ",Add
-            position = items[0]
-            player, status = self._clean_name(items[1])
-            salary = self._clean_salary(items[5])
-            self.stats[player]['fielding_position'] = position
-            self.stats[player]['salary'] = salary
-
-            starting = None
-            if status=='P':
-                starting = True
-            if status=='DL':
-                starting = False
-            self.stats[player]['starting'] = starting
-
-    def _clean_salary(self, salary):
-        # Returns a numerical value for the given salary string
-        return int(salary.strip().replace('$', '').replace(',', ''))
-
-    def get_fielding_position(self, player):
-        return self.stats[player]['fielding_position']
-
-    def get_salary(self, player):
-        return self.stats[player]['salary']
-
-    def get_starting(self, player):
-        return self.stats[player]['starting']
-
-
-    def read_positions_and_salaries(self):
         try:
             date = time.strftime('%Y-%m-%d')
             # TODO: this is a daily stat
@@ -301,12 +267,31 @@ class PlayerStats:
             salary = self._clean_salary(items[5])
             self.stats[player]['fielding_position'] = position
             self.stats[player]['salary'] = salary
-            self.stats[player]['availability'] = status
+
+            # TODO: change to None when we have real lineups
+            starting = True
+            if status=='P':
+                starting = True
+            if status=='DL':
+                starting = False
+            self.stats[player]['starting'] = status
+
             if status=='P':
                 team = self.get_team(player)
-                print 'PLAYER', player
-                print 'TEAM', team
                 self.starting_pitchers[team] = player
+
+    def _clean_salary(self, salary):
+        # Returns a numerical value for the given salary string
+        return int(salary.strip().replace('$', '').replace(',', ''))
+
+    def get_fielding_position(self, player):
+        return self.stats[player]['fielding_position']
+
+    def get_salary(self, player):
+        return self.stats[player]['salary']
+
+    def get_starting(self, player):
+        return self.stats[player]['starting']
 
     def read_rosters(self):
         handMap = {'R': 'right',
@@ -353,7 +338,8 @@ class PlayerStats:
         return self.stats[player]['team']
 
     def get_batting_position(self, player):
-        return 1
+        # TODO: not computing position right now
+        return 4
         #return randint(1, 9)
 
     def get_starting_pitcher(self, team):
@@ -377,3 +363,12 @@ class PlayerStats:
             return name.lower()[:-1], 'P'
         else:
             return name.lower(), None
+
+    def get_active_players(self):
+        players = []
+        for k, v in self.stats.items():
+            # TODO: hack to avoid players when we don't know their starting pitcher.
+            # this should not be an issue when we read real rosters.
+            if v.get('starting', False) and (v.get('team', None) in self.starting_pitchers):
+                players.append(k)
+        return players

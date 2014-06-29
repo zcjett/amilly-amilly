@@ -128,8 +128,10 @@ class TeamStats:
         self.read_team_stats()
         self.read_team_left_right()
         self.read_daily_matchups()
+        self.read_fielding_stats()
 
         # self.printStats()
+
 
     def printStats(self):
         print json.dumps(self.stats, indent=4)
@@ -200,3 +202,21 @@ class TeamStats:
 
     def get_opponent(self, team):
         return self.stats[team]['opponent']
+
+
+    def read_fielding_stats(self):
+        years = [2013, 2014]
+        for year in years:
+            infile = '%s/Team/%d Team Fielding Stats.csv' %(self.statsDir, year)
+            reader = csv.reader(open(infile), quotechar='"')
+            header = reader.next()
+            for items in reader:
+                team = get_team_by_mascot(items[0])
+                self.stats[team][year]['sb_allowed'] = float(items[1])
+                self.stats[team][year]['cs_fielding'] = float(items[2])
+
+    def get_sb_allowed(self, year, team):
+        return self.stats[team][year]['sb_allowed']
+
+    def get_cs_fielding(self, year, team):
+        return self.stats[team][year]['cs_fielding']
